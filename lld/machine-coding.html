@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Machine Coding — Daily Dose of Practise</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/form.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="../" class="nav-logo">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">Daily<span class="accent">Dose</span></span>
+      </a>
+      <div class="nav-links">
+        <a href="../#dsa" class="nav-link">DSA</a>
+        <a href="../#lld" class="nav-link active">LLD</a>
+        <a href="../#hld" class="nav-link">HLD</a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" title="Toggle theme">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="subpage-header">
+      <div class="subpage-breadcrumb">
+        <a href="../">Home</a>
+        <span>›</span>
+        <a href="../#lld">LLD</a>
+        <span>›</span>
+        <span style="color:var(--text-primary)">Machine Coding</span>
+      </div>
+      <div style="margin-bottom:12px">
+        <span class="hub-section-badge badge-LLD">LLD</span>
+      </div>
+      <h1 class="subpage-title" style="background:linear-gradient(135deg,#22d3ee,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">⌨️ Machine Coding</h1>
+      <p class="subpage-subtitle">Timed design-and-implement challenges. Build working systems under interview pressure.</p>
+    </div>
+
+    <div id="user-questions"></div>
+  </main>
+
+  <footer class="footer" style="margin-top:80px">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <span class="logo-icon">⚡</span>
+        <span>Daily<span class="accent">Dose</span></span>
+      </div>
+      <p class="footer-tagline">Consistency beats talent. Practice every day. 💪</p>
+    </div>
+  </footer>
+
+  <script>
+    window.PAGE_CATEGORY   = 'LLD';
+    window.PAGE_SUBCATEGORY = 'Machine Coding';
+  </script>
+  <script src="../js/store.js"></script>
+  <script src="../js/question-loader.js"></script>
+</body>
+</html>

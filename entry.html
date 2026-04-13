@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Entry — Daily Dose of Practise</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/form.css" />
+  <link rel="stylesheet" href="css/entry.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body class="entry-page">
+
+  <!-- ─── TOP BAR ─── -->
+  <div class="entry-topbar">
+    <button class="entry-back-btn" id="back-btn" onclick="history.back()" title="Go back">← Back</button>
+    <a href="index.html" class="form-topbar-brand">
+      <span>⚡</span>
+      <span>Daily<span class="accent">Dose</span></span>
+    </a>
+    <div class="entry-topbar-actions">
+      <button class="nav-action-btn" id="edit-btn" style="display:none">✏️ Edit</button>
+      <button class="nav-action-btn entry-delete-btn" id="delete-btn" style="display:none">🗑️ Delete</button>
+      <button class="theme-toggle" id="theme-toggle" title="Toggle theme">🌙</button>
+    </div>
+  </div>
+
+  <!-- ─── CONTENT ─── -->
+  <main class="entry-main" id="entry-main">
+    <!-- Filled by entry.js -->
+    <div class="entry-loading" id="entry-loading">
+      <div class="entry-loading-spinner"></div>
+      <p>Loading entry…</p>
+    </div>
+  </main>
+
+  <script src="js/store.js"></script>
+  <script src="js/entry.js"></script>
+</body>
+</html>

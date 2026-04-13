@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New Entry — Daily Dose of Practise</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/form.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body class="form-page">
+
+  <!-- ─── TOP BAR ─── -->
+  <div class="form-topbar">
+    <div style="display:flex;align-items:center;gap:4px">
+      <a href="index.html" class="form-topbar-brand">
+        <span>⚡</span>
+        <span>Daily<span class="accent">Dose</span></span>
+      </a>
+      <span class="form-topbar-title">New Entry</span>
+    </div>
+    <div class="form-topbar-actions">
+      <button class="theme-toggle" id="theme-toggle" title="Toggle theme">🌙</button>
+    </div>
+  </div>
+
+  <!-- ─── FORM ─── -->
+  <div class="form-container">
+
+    <div class="form-hero">
+      <h1 id="form-hero-title">✏️ Create New Entry</h1>
+      <p id="form-hero-sub">Fill in the details below. Your entry will be saved permanently in this browser.</p>
+    </div>
+
+    <!-- ══ SECTION 1: Basic Info ══ -->
+    <div class="form-section">
+      <div class="form-section-title">📋 Basic Information</div>
+
+      <div class="form-row form-row-3">
+        <div class="form-field">
+          <label class="form-label">Date <span class="required">*</span></label>
+          <input type="date" id="f-date" class="form-input" />
+        </div>
+
+        <div class="form-field">
+          <label class="form-label">Category <span class="required">*</span></label>
+          <select id="f-category" class="form-select">
+            <option value="">— Select —</option>
+            <option value="DSA">DSA</option>
+            <option value="LLD">LLD</option>
+            <option value="HLD">HLD</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label">Sub-category <span class="required">*</span></label>
+          <select id="f-subcategory" class="form-select" disabled>
+            <option value="">— Select category first —</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row form-row-2">
+        <div class="form-field">
+          <label class="form-label">Title <span class="required">*</span></label>
+          <input type="text" id="f-title" class="form-input" placeholder="e.g. Two Sum, Design Parking Lot" />
+        </div>
+        <div class="form-field">
+          <label class="form-label">Topic <span class="required">*</span></label>
+          <input type="text" id="f-topic" class="form-input" placeholder="e.g. Arrays & Hashing, OOP Design" />
+        </div>
+      </div>
+
+      <div class="form-field" style="margin-top:4px">
+        <label class="form-label">Difficulty</label>
+        <div class="difficulty-group">
+          <button type="button" class="diff-btn" data-diff="Easy">Easy</button>
+          <button type="button" class="diff-btn" data-diff="Medium">Medium</button>
+          <button type="button" class="diff-btn" data-diff="Hard">Hard</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SECTION 2: Tags ══ -->
+    <div class="form-section">
+      <div class="form-section-title">🏷️ Tags</div>
+
+      <!-- DSA Type Tags (only for DSA) -->
+      <div class="form-field" id="dsa-types-section" style="margin-bottom:20px;display:none">
+        <label class="form-label">DSA Topic Tags</label>
+        <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:8px">Select relevant data structure / algorithm types</p>
+        <div class="chips-container" id="dsa-type-chips"></div>
+      </div>
+
+      <!-- Custom Tags -->
+      <div class="form-field">
+        <label class="form-label">Custom Tags</label>
+        <div class="custom-tags-input-row">
+          <input type="text" id="f-custom-tag-input" class="form-input" placeholder="Type a tag and press Add or Enter" style="flex:1" />
+          <button type="button" class="btn-create" id="btn-add-tag" style="padding:10px 18px;font-size:0.82rem">+ Add</button>
+        </div>
+        <div class="custom-tags-selected" id="custom-tags-list"></div>
+      </div>
+    </div>
+
+    <!-- ══ SECTION 3: Problem Statement ══ -->
+    <div class="form-section">
+      <div class="form-section-title">📝 Problem Statement</div>
+      <div class="form-field">
+        <label class="form-label">Problem Description <span class="required">*</span></label>
+        <textarea id="f-description" class="form-textarea" placeholder="Describe the problem clearly. Include examples, constraints, and any special notes.&#10;&#10;You can use plain text or markdown-like formatting."></textarea>
+      </div>
+    </div>
+
+    <!-- ══ SECTION 4: Diagram ══ -->
+    <div class="form-section">
+      <div class="form-section-title">🖼️ Diagram</div>
+
+      <div class="upload-area" id="upload-area" onclick="document.getElementById('f-diagram-file').click()">
+        <div id="upload-preview-wrap">
+          <div class="upload-icon">📁</div>
+          <div class="upload-text">Click to upload an image</div>
+          <div class="upload-hint">PNG, JPG, SVG up to 2MB</div>
+        </div>
+      </div>
+      <input type="file" id="f-diagram-file" accept="image/*" style="display:none" />
+
+      <div class="upload-or">or paste image URL</div>
+
+      <div class="form-field">
+        <input type="url" id="f-diagram-url" class="form-input" placeholder="https://example.com/diagram.png" />
+      </div>
+    </div>
+
+    <!-- ══ SECTION 5: Video ══ -->
+    <div class="form-section">
+      <div class="form-section-title">🎥 Video Reference</div>
+      <div class="form-field">
+        <label class="form-label">Video URL</label>
+        <input type="url" id="f-video" class="form-input" placeholder="https://youtube.com/watch?v=..." />
+      </div>
+    </div>
+
+    <!-- ══ SECTION 6: Code ══ -->
+    <div class="form-section">
+      <div class="form-section-title">💻 Code</div>
+      <div class="code-header">
+        <label class="form-label" style="margin-bottom:0">Solution Code</label>
+        <select id="f-lang" class="lang-select">
+          <option value="python">Python</option>
+          <option value="java">Java</option>
+          <option value="javascript">JavaScript</option>
+          <option value="cpp">C++</option>
+          <option value="go">Go</option>
+          <option value="rust">Rust</option>
+          <option value="typescript">TypeScript</option>
+          <option value="kotlin">Kotlin</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <textarea id="f-code" class="form-textarea code-area" placeholder="# Paste your solution code here&#10;def twoSum(nums, target):&#10;    seen = {}&#10;    for i, num in enumerate(nums):&#10;        complement = target - num&#10;        if complement in seen:&#10;            return [seen[complement], i]&#10;        seen[num] = i"></textarea>
+    </div>
+
+    <!-- ══ ACTIONS ══ -->
+    <div class="form-actions-floating">
+      <span id="form-status" style="font-size:0.8rem;color:var(--text-muted);margin-right:auto"></span>
+      <button type="button" class="btn-cancel" onclick="window.close()">✕ Cancel</button>
+      <button type="button" class="btn-create" id="btn-create">✨ Create Entry</button>
+    </div>
+
+    <!-- Spacer for floating bar -->
+    <div style="height:80px"></div>
+
+  </div><!-- /form-container -->
+
+  <script src="js/store.js"></script>
+  <script src="js/new-question.js"></script>
+</body>
+</html>

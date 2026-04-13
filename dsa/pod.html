@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Problem of the Day — Daily Dose of Practise</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/form.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="../" class="nav-logo">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">Daily<span class="accent">Dose</span></span>
+      </a>
+      <div class="nav-links">
+        <a href="../#dsa" class="nav-link active">DSA</a>
+        <a href="../#lld" class="nav-link">LLD</a>
+        <a href="../#hld" class="nav-link">HLD</a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" title="Toggle theme">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="subpage-header">
+      <div class="subpage-breadcrumb">
+        <a href="../">Home</a>
+        <span>›</span>
+        <a href="../#dsa">DSA</a>
+        <span>›</span>
+        <span style="color:var(--text-primary)">Problem of the Day</span>
+      </div>
+      <div style="margin-bottom:12px">
+        <span class="hub-section-badge badge-DSA">DSA</span>
+      </div>
+      <h1 class="subpage-title">🔥 Problem of the Day</h1>
+      <p class="subpage-subtitle">One handpicked DSA problem every day. Stay consistent, stay sharp.</p>
+    </div>
+
+    <div id="user-questions"></div>
+  </main>
+
+  <footer class="footer" style="margin-top:80px">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <span class="logo-icon">⚡</span>
+        <span>Daily<span class="accent">Dose</span></span>
+      </div>
+      <p class="footer-tagline">Consistency beats talent. Practice every day. 💪</p>
+    </div>
+  </footer>
+
+  <script>
+    window.PAGE_CATEGORY   = 'DSA';
+    window.PAGE_SUBCATEGORY = 'Problem of the Day';
+  </script>
+  <script src="../js/store.js"></script>
+  <script src="../js/question-loader.js"></script>
+</body>
+</html>

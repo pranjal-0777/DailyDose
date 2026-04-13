@@ -1,0 +1,20 @@
+[
+  {
+    "id": "user_1775980581178_2z67f",
+    "date": "2026-04-12",
+    "category": "LLD",
+    "subcategory": "Machine Coding",
+    "title": "Concurrent Topo Sort",
+    "topic": "Concurrency & Topological Sort",
+    "difficulty": "Medium",
+    "dsaTags": [],
+    "customTags": [],
+    "description": "Create a DAG that can run via Multi-Threading.",
+    "diagram": "",
+    "video": "",
+    "code": "import java.util.*;\nimport java.util.concurrent.*;\nimport java.util.concurrent.atomic.AtomicInteger;\n\npublic class Solution {\n\n    private static List<Integer> topologicalSort(List<List<Integer>> lst){\n        int numOfNodes = lst.size();\n        List<Integer> finalAns = Collections.synchronizedList(new ArrayList<>());\n\n        // Use a standard array for indegree if size is fixed to avoid sync overhead on the list itself\n        List<AtomicInteger> indegree = new ArrayList<>();\n        for(int i=0;i<numOfNodes;i++)\n            indegree.add(new AtomicInteger(0));\n\n        for(int parent=0;parent<numOfNodes;parent++){\n            for(int child:lst.get(parent)){\n                indegree.get(child).getAndIncrement();\n            }\n        }\n\n        ExecutorService exectors = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());\n        List<CompletableFuture<Void>> rootFutures = new ArrayList<>();\n\n        for(int i=0;i<numOfNodes;i++){\n            if(indegree.get(i).get() == 0){\n                rootFutures.add(submitTask(i, exectors, lst, indegree, finalAns));\n            }\n        }\n\n        // CRITICAL: Wait for the entire graph to process before returning\n        if (!rootFutures.isEmpty()) {\n            CompletableFuture.allOf(rootFutures.toArray(new CompletableFuture[0])).join();\n        }\n\n        exectors.shutdown();\n        return finalAns;\n    }\n\n    private static CompletableFuture<Void> submitTask(int node, ExecutorService exectors, List<List<Integer>> lst, List<AtomicInteger> indegree, List<Integer> finalAns) {\n        return CompletableFuture.runAsync(() -> {\n            System.out.println(\"Executing Node :\" + node + \" on Thread \" + Thread.currentThread().getName());\n            finalAns.add(node);\n        }, exectors).thenCompose(v -> { // Added 'v ->' here\n            List<CompletableFuture<Void>> res = new ArrayList<>();\n            for (int child : lst.get(node)) {\n                if (indegree.get(child).decrementAndGet() == 0) {\n                    res.add(submitTask(child, exectors, lst, indegree, finalAns));\n                }\n            }\n            if (res.isEmpty()) {\n                return CompletableFuture.completedFuture(null);\n            }\n            return CompletableFuture.allOf(res.toArray(new CompletableFuture[0]));\n        });\n    }\n\n    public static void main(String[] args){\n        List<List<Integer>> lst = new ArrayList<>();\n        for(int i=0;i<6;i++){\n            lst.add(new ArrayList<>());\n        }\n        lst.get(5).add(2);\n        lst.get(5).add(0);\n        lst.get(4).add(0);\n        lst.get(4).add(1);\n        lst.get(2).add(3);\n        lst.get(3).add(1);\n\n        System.out.println(topologicalSort(lst));\n    }\n}",
+    "codeLanguage": "java",
+    "source": "user",
+    "updatedAt": 1775980710041
+  }
+]
