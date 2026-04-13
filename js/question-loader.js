@@ -8,6 +8,8 @@
    ============================================ */
 'use strict';
 
+const PAGE_SIZE = 7;
+
 document.addEventListener('DOMContentLoaded', async () => {
   // ─── Theme — only if app.js is NOT present ──
   if (typeof window.openModal === 'undefined') {
@@ -36,11 +38,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   const container = document.getElementById('user-questions');
   if (!container || !cat || !sub) return;
 
-  await renderQuestions(container, cat, sub);
+  await renderQuestions(container, cat, sub, 1);
 });
 
 // ─── Render ───────────────────────────────────
-async function renderQuestions(container, cat, sub) {
+async function renderQuestions(container, cat, sub, page) {
+  page = page || 1;
+
   // Show loading state
   container.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text-muted);font-size:0.85rem">Loading…</div>';
 
@@ -67,15 +71,25 @@ async function renderQuestions(container, cat, sub) {
     return;
   }
 
-  const count = questions.length;
+  // ─── Pagination maths ────────────────────────
+  const totalPages   = Math.ceil(questions.length / PAGE_SIZE);
+  page               = Math.max(1, Math.min(page, totalPages));
+  const start        = (page - 1) * PAGE_SIZE;
+  const pageQ        = questions.slice(start, start + PAGE_SIZE);
+  const totalCount   = questions.length;
+
+  // ─── Build HTML ──────────────────────────────
   container.innerHTML =
     '<div class="entries-header">' +
-      '<span class="entries-count">' + count + ' entr' + (count === 1 ? 'y' : 'ies') + '</span>' +
-      (count > 3 ? '<span class="entries-scroll-hint">↕ Scroll to see all</span>' : '') +
+      '<span class="entries-count">' + totalCount + ' entr' + (totalCount === 1 ? 'y' : 'ies') + '</span>' +
+      (totalPages > 1
+        ? '<span class="entries-page-info">Page ' + page + ' of ' + totalPages + '</span>'
+        : '') +
     '</div>' +
     '<div class="entries-scroller">' +
-      questions.map(q => buildUserCard(q)).join('') +
-    '</div>';
+      pageQ.map(q => buildUserCard(q)).join('') +
+    '</div>' +
+    (totalPages > 1 ? buildPagination(page, totalPages) : '');
 
   // Card navigation is handled by the native <a href target="_blank"> in the HTML.
   // Edit / Delete buttons are only rendered (and wired) in admin mode.
@@ -98,33 +112,18 @@ async function renderQuestions(container, cat, sub) {
         showDeleteConfirm(btn.dataset.id, btn.dataset.title, async () => {
           btn.closest('.user-q-card').style.opacity = '0.4';
           await DDPStore.remove(btn.dataset.id);
-          await renderQuestions(container, cat, sub);
+          await renderQuestions(container, cat, sub, page);
         });
       });
     });
   }
 
-  // ── Scroller effects ────────────────────────────────────────────────
+  // ── Scroller effects ─────────────────────────────────────────────────
   const scroller = container.querySelector('.entries-scroller');
   if (scroller) {
     const allCards = Array.from(scroller.querySelectorAll('.user-q-card'));
 
-    // 1) Cap height to ~3 cards so the page never looks crowded.
-    //    If there are >3 entries, measure actual card layout heights and
-    //    set maxHeight so the 4th card peeks through as a scroll hint.
-    if (allCards.length > 3) {
-      requestAnimationFrame(() => {
-        // offsetTop / offsetHeight are layout values — unaffected by CSS
-        // transform so they're accurate even before card-visible fires.
-        const third  = allCards[2];
-        const peek   = 52; // px of the 4th card visible as scroll hint
-        const capPx  = third.offsetTop + third.offsetHeight + peek;
-        scroller.style.maxHeight = capPx + 'px';
-        checkBottom(); // re-evaluate mask after height is set
-      });
-    }
-
-    // 2) Fade-mask: remove gradient when scrolled to bottom
+    // Fade-mask: remove gradient when scrolled to bottom
     const checkBottom = () => {
       const atBottom = scroller.scrollHeight - scroller.scrollTop <= scroller.clientHeight + 32;
       scroller.classList.toggle('at-bottom', atBottom);
@@ -132,13 +131,9 @@ async function renderQuestions(container, cat, sub) {
     scroller.addEventListener('scroll', checkBottom, { passive: true });
     checkBottom();
 
-    // 3) Scroll-reveal: animate each card as it enters the scroller viewport.
-    //    Uses IntersectionObserver with root = scroller so the overflow
-    //    container (not the page viewport) is used as the clipping root.
+    // Scroll-reveal: animate each card as it enters the scroller viewport.
     const revealObserver = new IntersectionObserver(
       (entries) => {
-        // Stagger within each batch: first-load cascade feels great;
-        // individual cards scrolling in appear immediately (batchIdx = 0).
         const visible = entries.filter(e => e.isIntersecting);
         visible.forEach((entry, batchIdx) => {
           const delay = Math.min(batchIdx * 60, 300);
@@ -151,6 +146,62 @@ async function renderQuestions(container, cat, sub) {
 
     allCards.forEach(card => revealObserver.observe(card));
   }
+
+  // ── Wire pagination buttons ──────────────────────────────────────────
+  container.querySelectorAll('.page-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const newPage = parseInt(btn.dataset.page, 10);
+      if (newPage === page) return;
+      renderQuestions(container, cat, sub, newPage);
+      // Smooth-scroll the container into view so the user sees the new page
+      container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+}
+
+// ─── Pagination builder ───────────────────────
+function buildPagination(current, total) {
+  const buttons = [];
+
+  // Previous arrow
+  buttons.push(
+    '<button class="page-btn page-arrow' + (current === 1 ? ' page-disabled' : '') + '"' +
+    ' data-page="' + (current - 1) + '"' +
+    (current === 1 ? ' disabled' : '') +
+    ' title="Previous page">‹</button>'
+  );
+
+  // Page number strategy: always show first, last, current ±1, with ellipsis gaps
+  const pages = new Set();
+  pages.add(1);
+  pages.add(total);
+  for (let p = current - 1; p <= current + 1; p++) {
+    if (p >= 1 && p <= total) pages.add(p);
+  }
+  const sorted = Array.from(pages).sort((a, b) => a - b);
+
+  let prev = 0;
+  for (const p of sorted) {
+    if (p - prev > 1) {
+      buttons.push('<span class="page-ellipsis">…</span>');
+    }
+    buttons.push(
+      '<button class="page-btn' + (p === current ? ' page-active' : '') + '"' +
+      ' data-page="' + p + '"' +
+      ' title="Page ' + p + '">' + p + '</button>'
+    );
+    prev = p;
+  }
+
+  // Next arrow
+  buttons.push(
+    '<button class="page-btn page-arrow' + (current === total ? ' page-disabled' : '') + '"' +
+    ' data-page="' + (current + 1) + '"' +
+    (current === total ? ' disabled' : '') +
+    ' title="Next page">›</button>'
+  );
+
+  return '<div class="pagination">' + buttons.join('') + '</div>';
 }
 
 // ─── Card builder ─────────────────────────────
