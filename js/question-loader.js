@@ -8,7 +8,7 @@
    ============================================ */
 'use strict';
 
-const PAGE_SIZE = 7;
+const PAGE_SIZE = 3;
 
 document.addEventListener('DOMContentLoaded', async () => {
   // ─── Theme — only if app.js is NOT present ──
